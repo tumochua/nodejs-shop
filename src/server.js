@@ -12,8 +12,16 @@ require("dotenv").config();
 
 let app = express();
 
-app.use(cors({ credentials: true, origin: true }));
-// app.use(cors())
+// if (NODE_ENV !== 'production') {
+//   app.use(cors())
+// }
+// app.use(cors({ credentials: true, origin: true }));
+// app.use(cors());
+app.use(
+  cors({
+    origin: process.env.VUE_URL,
+  })
+);
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb" }));
