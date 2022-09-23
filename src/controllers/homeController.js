@@ -25,19 +25,8 @@ let getHomePage = async (req, res) => {
   }
 };
 
-const handleRegister = (req, res) => {
-  try {
-    let data = req.body;
-    console.log(data);
-    return res.status(200).json(data);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 module.exports = {
   getHomePage,
   getAboutPage,
   getDetail,
-  handleRegister,
 };
