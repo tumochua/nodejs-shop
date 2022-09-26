@@ -9,7 +9,7 @@ const HANDLE_CHECK_EMAIL = (email) => {
           email: email,
         },
         // attributes: {
-        //   exclude: ["passwordHash"],
+        //   exclude: ["password"],
         // },
       });
       if (checkIsEmail) {

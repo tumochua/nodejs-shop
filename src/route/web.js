@@ -10,7 +10,13 @@ let initWebRoutes = (app) => {
   router.get("/about", homeController.getAboutPage);
 
   router.post("/register", auth.handleRegister);
-  router.post("/login", auth.handleLogin);
+  router.post("/login", middeware.handleSiginTokens, auth.handleLogin);
+  router.get(
+    "/private",
+    homeController.handleGetPrivate,
+    homeController.handlePrivate
+  );
+  // router.get("/test", auth.handleTest);
   // router.post("/login", middeware.loginMiddware);
 
   return app.use("/", router);

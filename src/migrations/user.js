@@ -27,7 +27,7 @@ module.exports = {
         unique: true,
         isEmail: true,
       },
-      passwordHash: {
+      password: {
         type: Sequelize.STRING,
         allowNull: false,
       },

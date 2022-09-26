@@ -7,29 +7,23 @@ import {
 const handleregisters = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // const userEmail = data.email;
-      // const userPassword = data.password;
-      // // console.log(data);
-      // console.log(!userEmail || !userPassword);
-      // if (!userEmail || !userPassword) {
-      //   resolve({
-      //     message: "missing inputs parmeter",
-      //   });
-      //   return;
-      // }
-      // console.log(data.email);
-      // const { userEmail, userPassword } = data;
+      const userEmail = data.email;
+      const userPassword = data.password;
+      if (!userEmail || !userPassword) {
+        resolve({
+          message: "missing inputs parmeter",
+        });
+        return;
+      }
       const checkIsData = await HANDLE_CHECK_EMAIL(data.email);
       if (!checkIsData) {
-        let hashPasswordFromBcrypt = await HANDEL_HASH_PASSWORD(
-          data.passwordHash
-        );
+        let hashPasswordFromBcrypt = await HANDEL_HASH_PASSWORD(data.password);
         await db.User.create({
           email: data.email,
           firstName: data.firstName,
           middleName: data.middleName,
           lastName: data.lastName,
-          passwordHash: hashPasswordFromBcrypt,
+          password: hashPasswordFromBcrypt,
         });
         resolve("create users successful");
         return;
@@ -44,8 +38,9 @@ const handleregisters = (data) => {
 
 let handleLogin = (user) => {
   return new Promise(async (resolve, reject) => {
+    // console.log("check cookies", user);
     let userEmail = user.email;
-    let userPsswordHash = user.passwordHash;
+    let userPsswordHash = user.password;
     try {
       if (!userEmail || !userPsswordHash) {
         resolve({
@@ -61,12 +56,12 @@ let handleLogin = (user) => {
       // });
       const userData = await HANDLE_CHECK_EMAIL(userEmail);
       if (userData) {
-        const checkPasswordHash = userData.passwordHash;
+        const checkpassword = userData.password;
         const checkComparePassword = await HANDLE_COMPARE_PASSWORD(
           userPsswordHash,
-          checkPasswordHash
+          checkpassword
         );
-        // console.log(checkPasswordHash);
+        // console.log(checkpassword);
         if (!checkComparePassword) {
           resolve({
             errCode: 1,
@@ -75,7 +70,7 @@ let handleLogin = (user) => {
           });
           return;
         } else {
-          delete userData.passwordHash;
+          delete userData.password;
           resolve({
             data: userData,
             message: "ok",
