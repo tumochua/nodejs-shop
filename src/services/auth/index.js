@@ -8,8 +8,10 @@ const handleregisters = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const userEmail = data.email;
+      const userFirstName = data.firstName;
+      const userLastName = data.lastName;
       const userPassword = data.password;
-      if (!userEmail || !userPassword) {
+      if (!userEmail || !userFirstName || !userLastName || !userPassword) {
         resolve({
           message: "missing inputs parmeter",
         });
@@ -18,17 +20,27 @@ const handleregisters = (data) => {
       const checkIsData = await HANDLE_CHECK_EMAIL(data.email);
       if (!checkIsData) {
         let hashPasswordFromBcrypt = await HANDEL_HASH_PASSWORD(data.password);
-        await db.User.create({
+        let user = await db.User.create({
           email: data.email,
           firstName: data.firstName,
-          middleName: data.middleName,
           lastName: data.lastName,
+          address: data.address,
+          gender: data.sex,
+          admin: data.admin,
           password: hashPasswordFromBcrypt,
         });
-        resolve("create users successful");
+        delete user.dataValues.password;
+        resolve({
+          message: "create users successful",
+          errorCode: 2,
+          user: user,
+        });
         return;
       } else {
-        resolve("User already exists ");
+        resolve({
+          message: "User already exists ",
+          errorCode: 4,
+        });
       }
     } catch (e) {
       reject(e);
@@ -36,55 +48,107 @@ const handleregisters = (data) => {
   });
 };
 
-let handleLogin = (user) => {
+// let handleLogin = (user) => {
+//   return new Promise(async (resolve, reject) => {
+//     // console.log("check cookies", user);
+//     let userEmail = user.email;
+//     let userPsswordHash = user.password;
+//     try {
+//       if (!userEmail || !userPsswordHash) {
+//         resolve({
+//           errCode: 1,
+//           message: "missing inputs parmeter",
+//         });
+//         return;
+//       }
+//       // userData = await db.User.findOne({
+//       //   where: {
+//       //     email: userEmail,
+//       //   },
+//       // });
+//       const userData = await HANDLE_CHECK_EMAIL(userEmail);
+//       console.log(userData);
+//       if (userData.status === 4) {
+//         resolve({
+//           errCode: 1,
+//           message:
+//             "Incorrect account information or password please log in again",
+//         });
+//       }
+//       if (userData) {
+//         const checkpassword = userData.password;
+//         const checkComparePassword = await HANDLE_COMPARE_PASSWORD(
+//           userPsswordHash,
+//           checkpassword
+//         );
+//         // console.log(checkpassword);
+//         if (!checkComparePassword) {
+//           resolve({
+//             errCode: 1,
+//             message:
+//               "Incorrect account information or password please log in again",
+//           });
+//           return;
+//         } else {
+//           delete userData.password;
+//           resolve({
+//             data: userData,
+//             message: "ok",
+//           });
+//         }
+//         return;
+//       } else {
+//         resolve({
+//           errCode: 2,
+//           message: "User's not found",
+//         });
+//       }
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   });
+// };
+const handleLogin = ({ email, password }) => {
   return new Promise(async (resolve, reject) => {
-    // console.log("check cookies", user);
-    let userEmail = user.email;
-    let userPsswordHash = user.password;
     try {
-      if (!userEmail || !userPsswordHash) {
-        resolve({
-          errCode: 1,
-          message: "missing inputs parmeter",
+      let user = await HANDLE_CHECK_EMAIL(email);
+      if (user === true) {
+        let users = await db.User.findOne({
+          where: { email: email },
+          // attributes: {
+          //   exclude: ["password"],
+          // },
         });
-        return;
-      }
-      // userData = await db.User.findOne({
-      //   where: {
-      //     email: userEmail,
-      //   },
-      // });
-      const userData = await HANDLE_CHECK_EMAIL(userEmail);
-      if (userData) {
-        const checkpassword = userData.password;
-        const checkComparePassword = await HANDLE_COMPARE_PASSWORD(
-          userPsswordHash,
-          checkpassword
-        );
-        // console.log(checkpassword);
-        if (!checkComparePassword) {
-          resolve({
-            errCode: 1,
-            message:
-              "Incorrect account information or password please log in again",
-          });
-          return;
-        } else {
-          delete userData.password;
-          resolve({
-            data: userData,
-            message: "ok",
-          });
+        if (users) {
+          const userPassword = users.password;
+          const isPassword = await await HANDLE_COMPARE_PASSWORD(
+            password,
+            userPassword
+          );
+
+          if (isPassword) {
+            delete users.password;
+            resolve({
+              errorCode: 2,
+              data: users,
+            });
+          } else {
+            resolve({
+              errorCode: 4,
+              message:
+                "Incorrect account or password information. Please update again",
+            });
+          }
         }
-        return;
       } else {
         resolve({
-          errCode: 2,
-          message: "User's not found",
+          errorCode: 4,
+          message:
+            "Incorrect account or password information. Please update again",
         });
       }
     } catch (error) {
-      console.log(error);
+      reject(error);
     }
   });
 };

@@ -12,9 +12,7 @@ module.exports = {
       firstName: {
         type: Sequelize.STRING,
       },
-      middleName: {
-        type: Sequelize.STRING,
-      },
+
       lastName: {
         type: Sequelize.STRING,
       },
@@ -30,6 +28,14 @@ module.exports = {
       password: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      address: {
+        type: Sequelize.STRING,
+      },
+      gender: {
+        type: Sequelize.INTEGER(3),
+        allowNull: false,
+        defaultValue: 0,
       },
       admin: {
         allowNull: false,

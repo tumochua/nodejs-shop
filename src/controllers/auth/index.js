@@ -1,3 +1,5 @@
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 import auth from "../../services/auth/index";
 
 const handleRegister = async (req, res) => {
@@ -12,14 +14,20 @@ const handleRegister = async (req, res) => {
   }
 };
 const handleLogin = async (req, res) => {
-  // console.log("Cookies: ", req.cookies);
   try {
-    // res.setHeader("token", req.token);
-    // console.log(res.getHeader("token"));
-    const data = await auth.handleLogin(req.body);
+    const userData = await auth.handleLogin(req.body);
+    // console.log(" data", userData.data.id);
+    if (userData.errorCode === 2) {
+      const userId = userData.data.id;
+      let token = jwt.sign({ tokenId: userId }, process.env.JSON_WEB_TOKEN);
+      // console.log(token);
+      return res.status(200).json({
+        data: userData,
+        token: token,
+      });
+    }
     return res.status(200).json({
-      data: data,
-      token: req.token,
+      data: userData,
     });
   } catch (error) {
     console.log(error);

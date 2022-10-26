@@ -13,7 +13,7 @@ const HANDLE_CHECK_EMAIL = (email) => {
         // },
       });
       if (checkIsEmail) {
-        resolve(checkIsEmail);
+        resolve(true);
       } else {
         resolve(false);
       }

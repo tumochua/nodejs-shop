@@ -5,7 +5,7 @@ import initWebRoutes from "./route/web";
 import connectDB from "./config/connectDB";
 import cors from "cors";
 // let cookieParser = require("cookie-parser");
-import cookieParser from "cookie-parser";
+const cookieParser = require("cookie-parser");
 
 // let app = express()
 
@@ -20,12 +20,15 @@ let app = express();
 // }
 // app.use(cors({ credentials: true, origin: true }));
 // app.use(cors());
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(
   cors({
     origin: process.env.VUE_URL,
+    credentials: true,
+    optionsSuccessStatus: 200,
   })
 );
+app.use(cookieParser());
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb" }));
 
