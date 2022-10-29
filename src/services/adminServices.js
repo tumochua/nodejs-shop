@@ -17,22 +17,28 @@ const handleGetAllUsers = () => {
   });
 };
 
-const handleGetAllUser = (page) => {
+const handleGetPagingListUsers = (page) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (page) {
-        page <= 1 ? (page = 1) : page;
         const PAGE_SIZE = 5;
+        page <= 1 ? (page = 1) : page;
         const skip = (page - 1) * PAGE_SIZE;
         const data = await db.User.findAll({
           limit: PAGE_SIZE,
           offset: skip,
+          attributes: {
+            exclude: ["password"],
+          },
         });
+        let users = await db.User.findAll();
+        users = users.length;
         resolve({
           errCode: 0,
           data: data,
           currentPage: page,
-          totalItem: PAGE_SIZE,
+          totalItemPage: PAGE_SIZE,
+          totalUsers: users,
         });
       } else {
         const data = await db.User.findAll();
@@ -48,5 +54,5 @@ const handleGetAllUser = (page) => {
 };
 module.exports = {
   handleGetAllUsers,
-  handleGetAllUser,
+  handleGetPagingListUsers,
 };

@@ -33,14 +33,12 @@ module.exports = {
         type: Sequelize.STRING,
       },
       gender: {
-        type: Sequelize.INTEGER(3),
+        type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 0,
       },
       admin: {
+        type: Sequelize.STRING,
         allowNull: false,
-        type: Sequelize.INTEGER(5),
-        defaultValue: 0,
       },
       vendor: {
         allowNull: false,

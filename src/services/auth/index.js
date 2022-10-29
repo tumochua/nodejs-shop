@@ -3,7 +3,7 @@ import {
   HANDLE_CHECK_EMAIL,
   HANDEL_HASH_PASSWORD,
   HANDLE_COMPARE_PASSWORD,
-} from "../../const/index";
+} from "../../utils/index";
 const handleregisters = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -25,7 +25,7 @@ const handleregisters = (data) => {
           firstName: data.firstName,
           lastName: data.lastName,
           address: data.address,
-          gender: data.sex,
+          gender: data.gender,
           admin: data.admin,
           password: hashPasswordFromBcrypt,
         });

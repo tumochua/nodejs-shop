@@ -2,6 +2,8 @@ import express from "express";
 import homeController from "../controllers/homeController";
 import adminController from "../controllers/adminController";
 import auth from "../controllers/auth/index";
+import constans from "../constants/index";
+import utils from "../utils/index";
 import {
   hanleCheckLogin,
   handleCheckAuthAdmin,
@@ -44,9 +46,11 @@ let initWebRoutes = (app) => {
     homeController.handelSalesman
   );
   router.get("/get-all-users", adminController.handleGetAllUsers);
-  router.get("/users", adminController.handleGetAllUser);
-  // router.get("/test", auth.handleTest);
-  // router.post("/login", middeware.loginMiddware);
+  router.get(
+    "/users",
+    utils.usePagination,
+    adminController.handleGetPagingListUsers
+  );
 
   return app.use("/", router);
 };

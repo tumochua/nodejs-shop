@@ -14,13 +14,10 @@ const handleGetAllUsers = async (req, res) => {
     console.log(error);
   }
 };
-const handleGetAllUser = async (req, res) => {
+const handleGetPagingListUsers = async (req, res) => {
   try {
-    let PAGE_SIZE = req.query.page ? req.query.page : null;
-    PAGE_SIZE = parseInt(PAGE_SIZE);
-    const data = await adminServices.handleGetAllUser(PAGE_SIZE);
     return res.status(200).json({
-      data: data,
+      data: req.data,
       message: "ok",
     });
   } catch (error) {
@@ -32,5 +29,5 @@ const handleGetAllUser = async (req, res) => {
 };
 module.exports = {
   handleGetAllUsers,
-  handleGetAllUser,
+  handleGetPagingListUsers,
 };

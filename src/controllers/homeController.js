@@ -94,6 +94,19 @@ const handelSalesman = (req, res) => {
     console.log("check eror controll", error);
   }
 };
+const hanldePagination = (req, res) => {
+  try {
+    return res.status(200).json({
+      message: "ok",
+      data: req.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "error from serve",
+    });
+    console.log("check eror controll", error);
+  }
+};
 module.exports = {
   getHomePage,
   getAboutPage,
@@ -103,4 +116,5 @@ module.exports = {
   handleAdmin,
   handleShipper,
   handelSalesman,
+  hanldePagination,
 };
