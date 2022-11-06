@@ -32,17 +32,17 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
-      gender: {
+      genderId: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      admin: {
+      positionId: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       vendor: {
         allowNull: false,
-        type: Sequelize.INTEGER(5),
+        type: Sequelize.STRING,
         defaultValue: 0,
       },
       registeredAt: {

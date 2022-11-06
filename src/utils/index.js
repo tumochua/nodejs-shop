@@ -4,6 +4,29 @@ const salt = bcrypt.genSaltSync(10);
 
 import { PAGE_SIZE } from "../constants/index";
 
+const usersCheckUserAlreadyExist = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const userData = await db.User.findOne({
+        where: {
+          id: userId,
+        },
+        attributes: {
+          exclude: ["password", "email"],
+        },
+      });
+      if (userData) {
+        resolve(userData);
+      } else {
+        resolve({ errCode: 4, message: "Not Found User" });
+      }
+    } catch (error) {
+      reject(error);
+      console.log(error);
+    }
+  });
+};
+
 const HANDLE_CHECK_EMAIL = (email) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -70,6 +93,7 @@ const usePaginationService = async (currentPage) => {
       exclude: ["password"],
     },
   });
+
   if (!currentPage) {
     return {
       message: "ok",
@@ -83,14 +107,30 @@ const usePaginationService = async (currentPage) => {
       attributes: {
         exclude: ["password"],
       },
+      order: [["id", "ASC"]],
+      include: [
+        {
+          model: db.AllCode,
+          as: "genderData",
+          attributes: ["id", "KeyMap", "valueEn", "valueVi"],
+        },
+        {
+          model: db.AllCode,
+          as: "positionData",
+          attributes: ["id", "KeyMap", "valueEn", "valueVi"],
+        },
+      ],
+      raw: true,
+      nest: true,
     });
+    users = users.length;
     if (data.length === 0) {
       return {
         errCode: 4,
         message: "Not Found Fage",
+        totalUsers: users,
       };
     } else {
-      users = users.length;
       return {
         errCode: 0,
         data: data,
@@ -102,6 +142,120 @@ const usePaginationService = async (currentPage) => {
   }
 };
 
+const usesDeleteUserService = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const foundUser = await db.User.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      if (!foundUser) {
+        resolve({
+          errCode: 2,
+          errMessage: `User Not Fount`,
+        });
+      } else {
+        await db.User.destroy({
+          where: { id: userId },
+        });
+        resolve({
+          errCode: 0,
+          errMessage: `Delete User successful`,
+        });
+      }
+    } catch (error) {
+      reject(error);
+      console.log(error);
+    }
+  });
+};
+
+const usersEditUsers = (data) => {
+  // console.log(data);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await db.User.findOne({
+        where: { id: data.id },
+        raw: false,
+      });
+      if (user) {
+        user.lastName = data.lastName;
+        user.firstName = data.firstName;
+        user.address = data.address;
+        user.genderId = data.genderId;
+        user.positionId = data.positionId;
+
+        await user.save();
+
+        resolve({
+          errCode: 2,
+          message: "update the user succeeds",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: `user's not found`,
+        });
+      }
+    } catch (error) {
+      reject(error);
+      console.log(error);
+    }
+  });
+};
+const userGetDetailUser = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const userData = await db.User.findOne({
+        where: {
+          id: userId,
+        },
+        // order: [["id", "ASC"]],
+        attributes: {
+          exclude: ["password", "email"],
+        },
+        include: [
+          {
+            model: db.AllCode,
+            as: "genderData",
+            attributes: ["id", "KeyMap", "valueEn", "valueVi"],
+          },
+          {
+            model: db.AllCode,
+            as: "positionData",
+            attributes: ["id", "KeyMap", "valueEn", "valueVi"],
+          },
+        ],
+        raw: true,
+        nest: true,
+      });
+
+      if (userData) {
+        resolve(userData);
+      } else {
+        resolve({ errCode: 4, message: "Not Found User" });
+      }
+    } catch (error) {
+      reject(error);
+      console.log(error);
+    }
+  });
+};
+
+const convertBufferToBase64 = (products) => {
+  try {
+    let imageBase64 = null;
+    products.map((product) => {
+      imageBase64 = product.image;
+      imageBase64 = Buffer.from(imageBase64, "base64").toString("binary");
+    });
+    return imageBase64;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   HANDLE_CHECK_EMAIL,
   HANDEL_HASH_PASSWORD,
@@ -109,4 +263,8 @@ module.exports = {
 
   usePagination,
   usePaginationService,
+  usesDeleteUserService,
+  usersEditUsers,
+  userGetDetailUser,
+  convertBufferToBase64,
 };

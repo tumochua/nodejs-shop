@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 import auth from "../../services/auth/index";
 
 const handleRegister = async (req, res) => {
-  //   console.log("check data", req.body);
+  // console.log("check data", req.body);
   try {
     let data = await auth.handleregisters(req.body);
     return res.status(200).json({

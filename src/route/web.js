@@ -1,6 +1,7 @@
 import express from "express";
 import homeController from "../controllers/homeController";
 import adminController from "../controllers/adminController";
+import usersProducts from "../controllers/usersProducts";
 import auth from "../controllers/auth/index";
 import constans from "../constants/index";
 import utils from "../utils/index";
@@ -51,6 +52,17 @@ let initWebRoutes = (app) => {
     utils.usePagination,
     adminController.handleGetPagingListUsers
   );
+
+  router.delete("/delete-user", adminController.handleDeleteUser);
+  router.put("/edit-user", adminController.handleEditUser);
+  router.get("/get-user-detail-by-id", adminController.handleGetDetailUser);
+  router.get(
+    "/api-test-relationship",
+    adminController.handleApiTestRelationship
+  );
+
+  router.post("/api-create-product", usersProducts.handleCreateProducts);
+  router.get("/api-get-products", usersProducts.handleGetProduct);
 
   return app.use("/", router);
 };

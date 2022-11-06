@@ -15,10 +15,14 @@ const hanleCheckLogin = async (req, res, next) => {
           where: {
             id: token.tokenId,
           },
+          attributes: {
+            exclude: ["password"],
+          },
         });
+        const convertStringToNumber = +userData.positionId;
         req.userData = {
           userData,
-          userId: token.tokenId,
+          positionId: convertStringToNumber,
         };
 
         next();
@@ -36,8 +40,8 @@ const hanleCheckLogin = async (req, res, next) => {
   }
 };
 const handleCheckAuthAdmin = (req, res, next) => {
-  // console.log("handleCheckAuthAdmin", req.userData.userData.admin);
-  if (req.userData.userData.admin === 5) {
+  // console.log("handleCheckAuthAdmin", req.userData.positionId);
+  if (req.userData.positionId === 5) {
     next();
   } else {
     return res.status(200).json({
@@ -46,8 +50,8 @@ const handleCheckAuthAdmin = (req, res, next) => {
   }
 };
 const handleCheckShipper = (req, res, next) => {
-  // console.log(req.userData.userData.admin);
-  if (req.userData.userData.admin >= 4) {
+  // console.log(req.userData.positionId);
+  if (req.userData.positionId >= 2) {
     next();
   } else {
     return res.status(200).json({
@@ -56,7 +60,7 @@ const handleCheckShipper = (req, res, next) => {
   }
 };
 const handleCheckSalesma = (req, res, next) => {
-  if (req.userData.userData.admin >= 3) {
+  if (req.userData.positionId >= 1) {
     next();
   } else {
     return res.status(200).json({

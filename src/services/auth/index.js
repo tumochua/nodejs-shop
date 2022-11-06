@@ -25,8 +25,8 @@ const handleregisters = (data) => {
           firstName: data.firstName,
           lastName: data.lastName,
           address: data.address,
-          gender: data.gender,
-          admin: data.admin,
+          genderId: data.genderId,
+          positionId: data.positionId,
           password: hashPasswordFromBcrypt,
         });
         delete user.dataValues.password;
