@@ -243,13 +243,13 @@ const userGetDetailUser = (userId) => {
   });
 };
 
-const convertBufferToBase64 = (products) => {
+const convertBufferToBase64 = (product) => {
   try {
-    let imageBase64 = null;
-    products.map((product) => {
-      imageBase64 = product.image;
-      imageBase64 = Buffer.from(imageBase64, "base64").toString("binary");
-    });
+    const imageBase64 = Buffer.from(product, "base64").toString("binary");
+    // let imageBase64 = null;
+    // products.map((product) => {
+    //   imageBase64 = product.image;
+    // });
     return imageBase64;
   } catch (error) {
     console.log(error);

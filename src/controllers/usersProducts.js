@@ -28,7 +28,22 @@ const handleGetProduct = async (req, res) => {
   }
 };
 
+const handleGetDetailProduct = async (req, res) => {
+  try {
+    const detailProduct = await usersProduct.handleGetDetailProduct(
+      req.query.id
+    );
+    return res.status(200).json({
+      errCode: 1,
+      data: detailProduct,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   handleCreateProducts,
   handleGetProduct,
+  handleGetDetailProduct,
 };
